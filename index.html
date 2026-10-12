@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리눅스 명령어 사전 · Linux Command Lexicon</title>
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-focus: #0071e3;
+            --ink: #1d1d1f;
+            --ink-muted: #7a7a7a;
+            --canvas: #ffffff;
+            --canvas-parchment: #f5f5f7;
+            --surface-pearl: #fafafc;
+            --hairline: #e0e0e0;
+            --surface-black: #000000;
+            --radius-sm: 8px;
+            --radius-md: 11px;
+            --radius-lg: 18px;
+            --radius-pill: 9999px;
+            --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            --font-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-text);
+        }
+
+        body {
+            background-color: var(--canvas-parchment);
+            color: var(--ink);
+            line-height: 1.47;
+            letter-spacing: -0.374px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav Header */
+        .global-nav {
+            background-color: var(--surface-black);
+            color: #ffffff;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            font-size: 13px;
+        }
+
+        .global-nav .brand {
+            font-weight: 600;
+            letter-spacing: -0.2px;
+        }
+
+        .sub-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245, 245, 247, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--hairline);
+            padding: 12px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sub-nav h1 {
+            font-family: var(--font-display);
+            font-size: 21px;
+            font-weight: 600;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Buttons */
+        .btn-pill {
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: var(--radius-pill);
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-pill:hover {
+            background-color: var(--primary-focus);
+        }
+
+        .btn-pill:active {
+            transform: scale(0.96);
+        }
+
+        .btn-secondary {
+            background-color: var(--canvas);
+            color: var(--ink);
+            border: 1px solid var(--hairline);
+            padding: 8px 18px;
+            border-radius: var(--radius-pill);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--surface-pearl);
+        }
+
+        /* Hero / Controls Section */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: 44px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .hero-subtitle {
+            font-size: 19px;
+            color: var(--ink-muted);
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .search-bar-wrapper {
+            max-width: 640px;
+            margin: 0 auto 32px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 48px;
+            padding: 12px 24px;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--hairline);
+            background: var(--canvas);
+            font-size: 16px;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: border-color 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+        }
+
+        .category-filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .filter-chip {
+            padding: 8px 18px;
+            border-radius: var(--radius-pill);
+            background: var(--canvas);
+            border: 1px solid var(--hairline);
+            font-size: 14px;
+            color: var(--ink);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-chip.active {
+            background: var(--ink);
+            color: #ffffff;
+            border-color: var(--ink);
+        }
+
+        /* Dictionary Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--canvas);
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .cmd-name {
+            font-family: monospace;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .cat-tag {
+            font-size: 12px;
+            padding: 4px 10px;
+            background: var(--canvas-parchment);
+            border-radius: var(--radius-sm);
+            color: var(--ink-muted);
+            font-weight: 500;
+        }
+
+        .cmd-desc {
+            font-size: 15px;
+            color: var(--ink);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .code-box {
+            background: var(--canvas-parchment);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            font-family: "SF Mono", Consolas, Monaco, monospace;
+            font-size: 13px;
+            color: #24292e;
+            overflow-x: auto;
+            margin-bottom: 12px;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .cmd-options {
+            font-size: 13px;
+            color: var(--ink-muted);
+            border-top: 1px solid var(--hairline);
+            padding-top: 12px;
+            margin-top: auto;
+        }
+
+        /* Flow Guide Section (Pipeline/Redirection) */
+        .special-section {
+            background: var(--canvas);
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            margin-bottom: 40px;
+        }
+
+        .special-title {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .flow-toggle { display:flex; align-items:center; justify-content:space-between; gap:16px; width:100%; padding:0; border:0; background:transparent; color:inherit; cursor:pointer; text-align:left; }
+        .flow-toggle .special-title { margin-bottom:0; }
+        .flow-chevron { font-size:22px; color:var(--ink-muted); transition:transform .2s ease; }
+        .flow-toggle[aria-expanded="true"] .flow-chevron { transform:rotate(180deg); }
+        .flow-content { margin-top:22px; overflow-x:auto; }
+        .flow-content[hidden] { display:none; }
+        .flow-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .flow-table th, .flow-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--hairline);
+        }
+
+        .flow-table th {
+            background: var(--canvas-parchment);
+            font-weight: 600;
+        }
+
+        .flow-symbol {
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--canvas);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 520px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--hairline);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--ink-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--hairline);
+            margin-top: 60px;
+        }
+
+        .card { justify-content: flex-start; gap: 0; }
+        .card-meta { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+        .meta-pill { font-size:11px; border-radius:999px; background:#eef5ff; color:#0066cc; padding:4px 9px; }
+        .card-section-label { font-size:11px; font-weight:700; color:#6e6e73; letter-spacing:.04em; margin:15px 0 6px; }
+        .syntax-box { background:#f5f5f7; padding:11px 13px; border-radius:9px; font-family:Consolas,monospace; font-size:12px; overflow-wrap:anywhere; }
+        .options-list { width:100%; border-collapse:collapse; font-size:12px; }
+        .options-list td { padding:8px 4px; border-bottom:1px solid #f0f0f0; vertical-align:top; }
+        .options-list td:first-child { width:35%; font-family:Consolas,monospace; color:#0066cc; font-weight:600; overflow-wrap:anywhere; }
+        .example-box { background:#1d1d1f; color:#f5f5f7; border-radius:10px; padding:13px; font:12px/1.6 Consolas,monospace; overflow-wrap:anywhere; white-space:pre-wrap; }
+        .usage-note { background:#fafafc; border-left:3px solid #0066cc; border-radius:4px; padding:10px 12px; font-size:13px; }
+        .card-footer-meta { margin-top:16px; border-top:1px solid #eee; padding-top:10px; display:flex; justify-content:space-between; gap:8px; align-items:center; font-size:11px; color:#777; }
+        .mini-btn { border:1px solid #dedee3; border-radius:999px; background:white; padding:6px 10px; cursor:pointer; color:#0066cc; }
+        .mini-btn:hover { border-color:#0066cc; }
+        .empty-state { text-align:center; grid-column:1/-1; padding:60px 0; color:#777; }
+        @media(max-width:680px){.cards-grid{grid-template-columns:1fr}.sub-nav{padding:12px 16px}.container{padding:24px 14px}.card{padding:20px}}
+
+/* 확장 기능: 자동완성 · 학습 관리 · 암기 카드 */
+.search-bar-wrapper{z-index:15}.suggestions{display:none;position:absolute;top:54px;left:0;right:0;background:#fff;border:1px solid #dedee3;border-radius:16px;box-shadow:0 14px 38px #0002;overflow:hidden;max-height:290px;overflow-y:auto}.suggestions.show{display:block}.suggestion{display:flex;width:100%;text-align:left;justify-content:space-between;align-items:center;padding:12px 18px;border:0;background:#fff;cursor:pointer;gap:14px}.suggestion:hover,.suggestion:focus{background:#f5f5f7}.suggestion strong{color:#0066cc;font-family:monospace}.suggestion small{color:#777;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.toolbar{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;margin:0 auto 25px}.toolbar select,.toolbar input{background:white;border:1px solid #dedee3;border-radius:999px;padding:9px 13px;font-size:13px;max-width:190px}.toolbar .btn-secondary{padding:9px 14px}.count{display:inline-block;margin-left:5px;opacity:.7;font-size:12px}.card-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.star-btn{font-size:20px;line-height:1;border:0;background:transparent;color:#a4a4a9;cursor:pointer}.star-btn.on{color:#edac22}.status-select{font-size:12px;border:1px solid #e0e0e0;background:#fafafc;border-radius:7px;padding:5px;max-width:125px}.card-footer-meta{align-items:flex-start;flex-wrap:wrap}.card-tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.danger-btn{color:#bb3444}.small-help{text-align:center;font-size:12px;color:#777;margin:-14px 0 24px}.modal-backdrop{padding:15px}.modal{max-height:90vh;overflow-y:auto}.flashcard{background:#fff;border:1px solid #ddd;border-radius:18px;padding:35px 24px;min-height:240px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:16px;cursor:pointer;user-select:none}.flashcard .flash-title{font:700 31px Consolas,monospace;color:#0066cc;overflow-wrap:anywhere}.flashcard .flash-answer{font-size:15px;white-space:pre-wrap;line-height:1.7}.flashcard .flash-hint{color:#777;font-size:12px}.quiz-actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:15px}.quiz-stats{text-align:center;color:#666;font-size:13px;margin-bottom:12px}.learn-pill{border-radius:999px;background:#f5f5f7;padding:5px 9px;font-size:11px;color:#555}.study-panel{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:12px}.study-panel input{background:#fff;border:1px solid #dedee3;border-radius:999px;padding:10px 14px;font-size:13px}.modal .form-group textarea{resize:vertical}.info-line{font-size:12px;color:#777;text-align:center;margin-bottom:20px}
+
+    </style>
+    <meta name="theme-color" content="#102033">
+    <link rel="icon" type="image/svg+xml" href="/assets/linuxlex-mark.svg">
+    <link rel="stylesheet" href="/css/dictionary-theme.css">
+</head>
+<body>
+
+    <!-- Global Top Nav -->
+    <div class="global-nav">
+        <span class="brand">System Programming</span>
+        <span>Linux Dictionary</span>
+    </div>
+
+    <!-- Sticky Sub Nav -->
+    <div class="sub-nav">
+        <h1>리눅스 명령어 사전</h1>
+        <div class="nav-actions">
+            <button class="btn-secondary" onclick="openRoleModal()">팀원 및 역할</button>
+            <button class="btn-pill" onclick="openAddModal()">+ 명령어 추가</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="hero-title">Linux Command Reference</h2>
+        <p class="hero-subtitle" id="heroSubtitle">리눅스 명령어 · 핵심 옵션 · 문법 · 활용 예시를 한눈에</p>
+
+        <!-- Search Bar -->
+        <div class="search-bar-wrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="명령어, 키워드, 옵션, 문법, 예시, 활용 검색..." oninput="setSearchAndRender()" onkeydown="handleSearchKey(event)" autocomplete="off">
+            <div class="suggestions" id="suggestions"></div>
+        </div>
+
+        <!-- Category Filter Chips (주차 제거, 기능별 분류 적용) -->
+        <div class="category-filters" id="categoryFilters"></div>
+        <div class="toolbar">
+          <button class="btn-secondary" onclick="setView('all')" id="allView">모든 명령어</button>
+          <button class="btn-secondary" onclick="setView('favorites')" id="favView">★ 책갈피</button>
+          <button class="btn-secondary" onclick="openQuiz()">암기 카드 학습</button>
+          <select id="statusFilter" onchange="renderCards()" aria-label="학습 상태 필터"><option value="all">모든 학습 상태</option><option value="unlearned">미학습</option><option value="learning">학습 중</option><option value="done">완료</option></select>
+        </div>
+        <p class="small-help">책갈피와 학습 상태는 현재 브라우저에 저장되며, 다른 기기와 자동 동기화되지 않습니다.</p>
+
+        <!-- Pipeline & Redirection Visual Guide -->
+        <div class="special-section" id="flowSection">
+            <button type="button" class="flow-toggle" id="flowToggle" aria-expanded="false" aria-controls="flowContent" onclick="toggleFlow()">
+                <h3 class="special-title">🔀 파이프라인 & 리다이렉션 (Data Flow)</h3>
+                <span class="flow-chevron" aria-hidden="true">⌄</span>
+            </button>
+            <div class="flow-content" id="flowContent" hidden>
+            <table class="flow-table">
+                <thead>
+                    <tr>
+                        <th>기호</th>
+                        <th>구분</th>
+                        <th>설명 및 기능</th>
+                        <th>사용 예시</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="flow-symbol">|</td>
+                        <td>파이프라인</td>
+                        <td>앞 명령어의 출력을 뒷 명령어의 입력으로 전달</td>
+                        <td><code>ls -l | grep .txt</code></td>
+                    </tr>
+                    <tr>
+                        <td class="flow-symbol">&gt;</td>
+                        <td>표준 출력</td>
+                        <td>명령어 실행 결과를 파일에 덮어쓰기(Overwrite)</td>
+                        <td><code>ls > file_list.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td class="flow-symbol">&gt;&gt;</td>
+                        <td>표준 출력(추가)</td>
+                        <td>명령어 실행 결과를 파일 끝에 덧붙이기(Append)</td>
+                        <td><code>echo "log" >> app.log</code></td>
+                    </tr>
+                    <tr>
+                        <td class="flow-symbol">&lt;</td>
+                        <td>표준 입력</td>
+                        <td>파일의 내용을 읽어 명령어의 입력으로 전달</td>
+                        <td><code>sort < fruit.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td class="flow-symbol">2&gt;</td>
+                        <td>표준 에러</td>
+                        <td>오류 메시지만 파일로 리다이렉션 저장</td>
+                        <td><code>du -sh /etc 2> error.log</code></td>
+                    </tr>
+                    <tr><td class="flow-symbol">2&gt;&gt;</td><td>표준 에러(추가)</td><td>표준 에러를 기존 파일 끝에 덧붙이기</td><td><code>ls /없는경로 2&gt;&gt; error.log</code></td></tr>
+                    <tr><td class="flow-symbol">&amp;&gt;</td><td>표준 출력 + 에러</td><td>표준 출력과 표준 에러를 함께 덮어쓰기</td><td><code>ls /tmp /없는경로 &amp;&gt; result.log</code></td></tr>
+                    <tr><td class="flow-symbol">&amp;&gt;&gt;</td><td>표준 출력 + 에러(추가)</td><td>표준 출력과 표준 에러를 함께 덧붙이기</td><td><code>ls /tmp /없는경로 &amp;&gt;&gt; result.log</code></td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="cards-grid" id="cardsGrid">
+            <!-- Dynamic Insertion -->
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="quizModal"><div class="modal" style="max-width:650px"><h3 class="modal-title">암기 카드</h3><div class="study-panel"><select id="quizCategory" onchange="resetQuiz()"></select><select id="quizScope" onchange="resetQuiz()"><option value="all">전체 학습</option><option value="unlearned">미학습만</option><option value="learning">학습 중만</option><option value="favorites">책갈피만</option></select></div><p class="quiz-stats" id="quizStats"></p><div class="flashcard" id="flashcard" tabindex="0" role="button" onclick="flipCard()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard()}"></div><div class="quiz-actions"><button class="btn-secondary" onclick="previousCard()">← 이전</button><button class="btn-secondary" onclick="flipCard()">정답 보기 / 숨기기</button><button class="btn-pill" onclick="nextCard()">다음 →</button></div><div class="quiz-actions"><button class="btn-secondary" onclick="markQuiz('learning')">학습 중</button><button class="btn-pill" onclick="markQuiz('done')">암기 완료 ✓</button><button class="btn-secondary" onclick="shuffleQuiz()">순서 섞기</button></div><div class="modal-actions"><button class="btn-secondary" onclick="closeModal('quizModal')">닫기</button></div></div></div>
+
+    <!-- Modal: Add Command -->
+    <div class="modal-backdrop" id="addModal">
+        <div class="modal">
+            <h3 class="modal-title" id="editorTitle">새 명령어 추가</h3>
+            <div class="form-group">
+                <label>명령어</label>
+                <input type="text" id="addCmd" class="form-control" placeholder="예: chmod">
+            </div>
+            <div class="form-group">
+                <label>카테고리</label>
+                <select id="addCat" class="form-control">
+                    <option value="file">📁 파일 & 디렉터리</option>
+                    <option value="text">📝 문자 처리 & 편집기</option>
+                    <option value="process">⚡ 프로세스 관리</option>
+                    <option value="env">⚙️ 변수 & 환경변수</option>
+                    <option value="flow">🔀 파이프라인 & 리다이렉션</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>설명</label>
+                <input type="text" id="addDesc" class="form-control" placeholder="예: 파일의 접근 권한을 변경합니다.">
+            </div>
+            <div class="form-group"><label>키워드</label><input id="addKeyword" class="form-control" placeholder="예: 파일 목록, 숨김 파일"></div>
+            <div class="form-group"><label>기본 문법</label><input id="addSyntax" class="form-control" placeholder="예: ls [옵션] [경로]"></div>
+            <div class="form-group"><label>활용 / 주의사항</label><input id="addUsage" class="form-control" placeholder="예: 숨김 파일까지 확인할 때 사용"></div>
+            <div class="form-group">
+                <label>실행 예시</label>
+                <input type="text" id="addExample" class="form-control" placeholder="예: chmod +x script.sh">
+            </div>
+            <div class="form-group">
+                <label>주요 옵션 (한 줄에 하나씩, 옵션: 설명)</label>
+                <textarea id="addOptions" class="form-control" rows="3" placeholder="한 줄에 하나씩 입력: -l: 상세 목록 출력"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('addModal')">취소</button>
+                <button class="btn-pill" onclick="saveNewCommand()">저장하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Roles -->
+    <div class="modal-backdrop" id="roleModal">
+        <div class="modal">
+            <h3 class="modal-title">팀원 역할 및 프로젝트 소개</h3>
+            <p style="font-size: 14px; color: var(--ink-muted); margin-bottom: 16px;">시스템프로그래밍 팀 프로젝트 - 리눅스 명령어 사전</p>
+            <ul style="font-size: 14px; line-height: 1.8; margin-left: 20px; margin-bottom: 20px;">
+                <li><strong>팀원 A (학번):</strong> 데이터 수집 및 명령어 자료 정리</li>
+                <li><strong>팀원 B (학번):</strong> 사전 웹 프론트엔드 UI/UX 설계 및 개발</li>
+                <li><strong>팀원 C (학번):</strong> 보고서 작성 및 활용성 검증</li>
+            </ul>
+            <div class="modal-actions">
+                <button class="btn-pill" onclick="closeModal('roleModal')">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 시스템프로그래밍 팀 프로젝트 · 브라우저에서 추가한 내용은 현재 기기에 저장됩니다.</p>
+    </footer>
+
+    <script>
+        function toggleFlow() {
+            const button = document.getElementById('flowToggle');
+            const content = document.getElementById('flowContent');
+            const expanded = button.getAttribute('aria-expanded') === 'true';
+            button.setAttribute('aria-expanded', String(!expanded));
+            content.hidden = expanded;
+        }
+
+const initialCommands = [{"name":"pwd","keyword":"파일·디렉터리","desc":"현재 작업 디렉터리 표시","syntax":"pwd","example":"pwd -P","usage":"현재 위치 확인","options":["-P: 심볼릭 링크를 해석한 실제 경로"],"cat":"file","id":"base-1"},{"name":"ls","keyword":"파일·디렉터리","desc":"파일 및 폴더 목록 출력","syntax":"ls [옵션] [경로]","example":"ls -lah /home","usage":"디렉터리 내용 조회","options":["-l: 상세 정보","-a: 숨김 파일 포함","-h: 읽기 쉬운 크기","-R: 하위 디렉터리 재귀 출력","-al: 숨김 항목 포함 상세 출력"],"cat":"file","id":"base-2"},{"name":"cd","keyword":"파일·디렉터리","desc":"현재 디렉터리 이동","syntax":"cd [경로]","example":"cd ~/Documents","usage":"셸 내장 명령어","options":["..: 상위 폴더","~: 홈 디렉터리"],"cat":"file","id":"base-3"},{"name":"mkdir","keyword":"파일·디렉터리","desc":"디렉터리 생성","syntax":"mkdir [옵션] 디렉터리","example":"mkdir -p project/src","usage":"폴더 구조 생성","options":["-p: 중간 디렉터리도 생성"],"cat":"file","id":"base-4"},{"name":"touch","keyword":"파일·디렉터리","desc":"빈 파일 생성 또는 수정 시각 갱신","syntax":"touch 파일","example":"touch memo.txt","usage":"파일이 있으면 내용은 유지","options":["-c: 없는 파일 생성하지 않음","-a: 접근 시각만 변경","-t 시간: 지정한 시각으로 설정"],"cat":"file","id":"base-5"},{"name":"cp","keyword":"파일·디렉터리","desc":"파일·디렉터리 복사","syntax":"cp [옵션] 원본 대상","example":"cp -r src backup","usage":"덮어쓰기 주의","options":["-r: 디렉터리 재귀 복사","-i: 덮어쓰기 확인"],"cat":"file","id":"base-6"},{"name":"mv","keyword":"파일·디렉터리","desc":"파일 이동 또는 이름 변경","syntax":"mv [옵션] 원본 대상","example":"mv old.txt new.txt","usage":"이동과 이름 변경 모두 가능","options":["-i: 덮어쓰기 확인","-n: 덮어쓰기 방지"],"cat":"file","id":"base-7"},{"name":"rm","keyword":"파일·디렉터리","desc":"파일·디렉터리 삭제","syntax":"rm [옵션] 대상","example":"rm -i old.txt","usage":"삭제는 일반적으로 휴지통을 거치지 않음","options":["-r: 재귀 삭제","-i: 확인","-f: 확인 없이 삭제(주의)"],"cat":"file","id":"base-8"},{"name":"find","keyword":"파일·디렉터리","desc":"조건에 맞는 파일 검색","syntax":"find 경로 조건","example":"find . -name \"*.log\"","usage":"하위 디렉터리까지 검색","options":["-name: 이름","-type f: 일반 파일"],"cat":"file","id":"base-9"},{"name":"cat","keyword":"파일 내용·텍스트","desc":"파일 내용 출력","syntax":"cat 파일","example":"cat -n notes.txt","usage":"작은 텍스트 파일 확인","options":["-n: 줄 번호 표시"],"cat":"file","id":"base-10"},{"name":"less","keyword":"파일 내용·텍스트","desc":"파일 내용을 페이지 단위로 보기","syntax":"less 파일","example":"less /var/log/syslog","usage":"q로 종료","options":["-N: 줄 번호","f / b: 다음 / 이전 페이지","/패턴: 내용 검색","q: 종료"],"cat":"file","id":"base-11"},{"name":"head","keyword":"파일 내용·텍스트","desc":"파일 앞부분 출력","syntax":"head [옵션] 파일","example":"head -n 5 data.csv","usage":"기본 10줄","options":["-n 숫자: 출력 줄 수","-c 숫자: 지정 바이트 수 출력"],"cat":"file","id":"base-12"},{"name":"tail","keyword":"파일 내용·텍스트","desc":"파일 끝부분 출력","syntax":"tail [옵션] 파일","example":"tail -f app.log","usage":"로그 실시간 확인","options":["-n 숫자: 출력 줄 수","-f: 변경 추적","-c 숫자: 지정 바이트 수 출력"],"cat":"file","id":"base-13"},{"name":"grep","keyword":"파일 내용·텍스트","desc":"텍스트 패턴 검색","syntax":"grep [옵션] 패턴 파일","example":"grep -rn \"ERROR\" logs/","usage":"정규표현식 지원","options":["-i: 대소문자 무시","-n: 줄 번호","-r: 재귀 검색","-v: 일치하지 않는 줄 출력"],"cat":"file","id":"base-14"},{"name":"wc","keyword":"파일 내용·텍스트","desc":"줄·단어·바이트 수 집계","syntax":"wc [옵션] 파일","example":"wc -l notes.txt","usage":"텍스트 통계","options":["-l: 줄 수","-w: 단어 수","-c: 바이트 수"],"cat":"file","id":"base-15"},{"name":"sort","keyword":"파일 내용·텍스트","desc":"텍스트 줄 정렬","syntax":"sort [옵션] 파일","example":"sort -n scores.txt","usage":"기본 사전식 정렬","options":["-n: 숫자 정렬","-r: 역순"],"cat":"file","id":"base-16"},{"name":"uniq","keyword":"파일 내용·텍스트","desc":"연속된 중복 줄 처리","syntax":"uniq [옵션] 파일","example":"sort names.txt | uniq -c","usage":"전체 중복 집계에는 정렬 선행","options":["-c: 개수 표시","-d: 중복만 출력"],"cat":"file","id":"base-17"},{"name":"chmod","keyword":"권한·사용자","desc":"파일 권한 변경","syntax":"chmod 권한 파일","example":"chmod 755 script.sh","usage":"권한 755 = 소유자 rwx, 나머지 r-x","options":["-R: 재귀 적용","+x / a+x: 실행 권한 추가","755: 소유자 rwx, 그룹·기타 r-x"],"cat":"env","id":"base-18"},{"name":"chown","keyword":"권한·사용자","desc":"파일 소유자·그룹 변경","syntax":"chown 사용자[:그룹] 파일","example":"sudo chown user:dev app.txt","usage":"권한 필요할 수 있음","options":["-R: 재귀 적용"],"cat":"env","id":"base-19"},{"name":"whoami","keyword":"권한·사용자","desc":"현재 유효 사용자 이름 출력","syntax":"whoami","example":"whoami","usage":"현재 계정 확인","options":["옵션 없이 사용"],"cat":"env","id":"base-20"},{"name":"id","keyword":"권한·사용자","desc":"사용자 UID·GID 및 그룹 표시","syntax":"id [사용자]","example":"id -u","usage":"사용자 식별","options":["-u: UID","-g: 기본 GID"],"cat":"env","id":"base-21"},{"name":"sudo","keyword":"권한·사용자","desc":"다른 사용자 권한으로 명령 실행","syntax":"sudo 명령","example":"sudo systemctl status sshd","usage":"권한 정책에 따름","options":["-u 사용자: 지정 사용자로 실행"],"cat":"env","id":"base-22"},{"name":"ps","keyword":"프로세스·작업","desc":"프로세스 상태 조회","syntax":"ps [옵션]","example":"ps aux","usage":"실행 중인 프로세스 확인","options":["aux: 전체 사용자 프로세스 상세","-e: 모든 프로세스","-f: 상세 출력","-ef: 전체 프로세스 상세 출력"],"cat":"process","id":"base-23"},{"name":"top","keyword":"프로세스·작업","desc":"프로세스·자원 사용 실시간 표시","syntax":"top","example":"top -p 1234","usage":"q로 종료","options":["-p PID: 특정 프로세스","-d 초: 갱신 주기 설정","q: 종료"],"cat":"process","id":"base-24"},{"name":"kill","keyword":"프로세스·작업","desc":"프로세스에 시그널 전송","syntax":"kill [옵션] PID","example":"kill -TERM 1234","usage":"PID 확인 후 사용","options":["-TERM: 정상 종료 요청","-KILL: 강제 종료","-9: SIGKILL 강제 종료","-15: SIGTERM 정상 종료 요청","-19: SIGSTOP 일시 중지(Linux)","-18: SIGCONT 재개(Linux)"],"cat":"process","id":"base-25"},{"name":"jobs","keyword":"프로세스·작업","desc":"현재 셸의 백그라운드 작업 표시","syntax":"jobs","example":"jobs -l","usage":"셸 내장 명령어","options":["-l: PID 포함"],"cat":"process","id":"base-26"},{"name":"bg","keyword":"프로세스·작업","desc":"중지된 작업을 백그라운드로 재개","syntax":"bg [%작업번호]","example":"bg %1","usage":"작업 제어 지원 셸에서 사용","options":["작업번호 지정 가능"],"cat":"process","id":"base-27"},{"name":"fg","keyword":"프로세스·작업","desc":"작업을 포그라운드로 전환","syntax":"fg [%작업번호]","example":"fg %1","usage":"현재 셸 작업 제어","options":["작업번호 지정 가능"],"cat":"process","id":"base-28"},{"name":"uname","keyword":"시스템·디스크","desc":"시스템 정보 출력","syntax":"uname [옵션]","example":"uname -a","usage":"운영체제·커널 확인","options":["-a: 전체 정보","-r: 커널 릴리스"],"cat":"system","id":"base-29"},{"name":"df","keyword":"시스템·디스크","desc":"파일시스템 사용량 표시","syntax":"df [옵션]","example":"df -h","usage":"마운트된 파일시스템 단위","options":["-h: 읽기 쉬운 단위"],"cat":"system","id":"base-30"},{"name":"du","keyword":"시스템·디스크","desc":"파일·디렉터리 디스크 사용량","syntax":"du [옵션] 경로","example":"du -sh ~/Downloads","usage":"경로별 크기 확인","options":["-s: 합계","-h: 읽기 쉬운 단위","-sh: 합계와 읽기 쉬운 단위"],"cat":"system","id":"base-31"},{"name":"free","keyword":"시스템·디스크","desc":"메모리 사용량 표시","syntax":"free [옵션]","example":"free -h","usage":"리눅스 메모리 확인","options":["-h: 읽기 쉬운 단위"],"cat":"system","id":"base-32"},{"name":"date","keyword":"시스템·디스크","desc":"시스템 날짜·시간 표시","syntax":"date [옵션]","example":"date +%F","usage":"날짜 포맷 지정 가능","options":["+%F: YYYY-MM-DD 형식"],"cat":"system","id":"base-33"},{"name":"history","keyword":"시스템·디스크","desc":"셸 명령 기록 표시","syntax":"history","example":"history 20","usage":"셸 환경에 따라 다름","options":["숫자: 최근 지정 개수"],"cat":"system","id":"base-34"},{"name":"ip","keyword":"네트워크·원격","desc":"네트워크 인터페이스·주소·경로 조회","syntax":"ip 하위명령","example":"ip addr show","usage":"iproute2 도구","options":["addr: 주소, route: 라우팅"],"cat":"network","id":"base-35"},{"name":"ping","keyword":"네트워크·원격","desc":"대상 호스트 연결성 테스트","syntax":"ping [옵션] 호스트","example":"ping -c 4 example.com","usage":"ICMP 차단 시 응답 없을 수 있음","options":["-c 숫자: 요청 횟수 제한"],"cat":"network","id":"base-36"},{"name":"ss","keyword":"네트워크·원격","desc":"소켓·포트 상태 조회","syntax":"ss [옵션]","example":"ss -tuln","usage":"서비스 포트 확인","options":["-t: TCP","-u: UDP","-l: 수신","-n: 숫자 표시"],"cat":"network","id":"base-37"},{"name":"curl","keyword":"네트워크·원격","desc":"URL로 데이터 전송·요청","syntax":"curl [옵션] URL","example":"curl -I https://example.com","usage":"HTTP 점검","options":["-I: 헤더만","-L: 리다이렉트 추적"],"cat":"network","id":"base-38"},{"name":"ssh","keyword":"네트워크·원격","desc":"원격 시스템 접속","syntax":"ssh 사용자@호스트","example":"ssh user@192.0.2.10","usage":"서버 계정·접근 권한 필요","options":["-p 숫자: 포트 지정"],"cat":"network","id":"base-39"},{"name":"scp","keyword":"네트워크·원격","desc":"SSH 기반 파일 복사","syntax":"scp 원본 대상","example":"scp report.txt user@192.0.2.10:~/","usage":"원격 복사","options":["-r: 디렉터리 복사","-P: 포트 지정"],"cat":"network","id":"base-40"},{"name":"tar","keyword":"압축·패키지·서비스","desc":"아카이브 생성·해제","syntax":"tar [옵션] 파일","example":"tar -czf backup.tar.gz project/","usage":"압축과 아카이브 구분","options":["-c: 생성","-x: 추출","-f: 파일 지정","-z: gzip"],"cat":"archive","id":"base-41"},{"name":"gzip","keyword":"압축·패키지·서비스","desc":"파일 gzip 압축","syntax":"gzip [옵션] 파일","example":"gzip -k app.log","usage":"기본은 원본 파일 대체","options":["-d: 압축 해제","-k: 원본 보존"],"cat":"archive","id":"base-42"},{"name":"systemctl","keyword":"압축·패키지·서비스","desc":"systemd 서비스 제어","syntax":"systemctl 동작 서비스","example":"systemctl status sshd","usage":"systemd 기반 배포판에서 사용","options":["status: 상태, start: 시작, enable: 부팅 시 활성화"],"cat":"archive","id":"base-43"},{"name":"dnf","keyword":"압축·패키지·서비스","desc":"RPM 계열 패키지 관리","syntax":"dnf 동작 패키지","example":"sudo dnf install git","usage":"Rocky Linux 등에서 사용","options":["install: 설치, remove: 삭제, search: 검색"],"cat":"archive","id":"base-44"},{"name":"apt","keyword":"압축·패키지·서비스","desc":"Debian 계열 패키지 관리","syntax":"apt 동작 패키지","example":"sudo apt update","usage":"Ubuntu 등에서 사용","options":["update: 목록 갱신, install: 설치"],"cat":"archive","id":"base-45"},{"id":"lecture-46","name":"rmdir","cat":"file","keyword":"파일·디렉터리","desc":"비어 있는 디렉터리를 삭제합니다.","syntax":"rmdir [옵션] 디렉터리","example":"rmdir empty_folder","usage":"내용이 남아 있으면 삭제할 수 없습니다.","options":["-p: 비어진 상위 디렉터리도 연쇄 삭제"]},{"id":"lecture-47","name":"tree","cat":"file","keyword":"파일·디렉터리","desc":"파일과 하위 디렉터리 구조를 트리 형태로 출력합니다.","syntax":"tree [옵션] [경로]","example":"tree project","usage":"미설치 시 Ubuntu는 apt, Rocky Linux는 dnf로 설치합니다.","options":["-a: 숨김 파일 표시","-L 숫자: 표시할 깊이 제한"]},{"id":"lecture-48","name":"clear","cat":"env","keyword":"터미널·유틸리티","desc":"터미널 화면을 지웁니다.","syntax":"clear","example":"clear","usage":"기존 명령 기록은 삭제되지 않습니다.","options":[]},{"id":"lecture-49","name":"nano","cat":"text","keyword":"텍스트 편집기","desc":"터미널에서 사용하는 간단한 텍스트 편집기입니다.","syntax":"nano [파일]","example":"nano sample.txt","usage":"Ctrl+O 저장, Ctrl+X 종료, Ctrl+W 검색, Ctrl+K 잘라내기, Ctrl+U 붙여넣기, Ctrl+T 도구 실행.","options":["Ctrl+O: 저장","Ctrl+X: 종료","Ctrl+W: 검색","Ctrl+K / Ctrl+U: 잘라내기 / 붙여넣기","Ctrl+T: 도구 메뉴"]},{"id":"lecture-50","name":"more","cat":"text","keyword":"텍스트 처리","desc":"긴 텍스트 파일을 화면 단위로 나누어 보여줍니다.","syntax":"more [파일]","example":"more /etc/passwd","usage":"Space 다음 페이지, q 종료.","options":["+/패턴: 지정 패턴 위치에서 시작"]},{"id":"lecture-51","name":"vi / vim","cat":"text","keyword":"텍스트 편집기","desc":"일반 모드와 입력 모드를 구분하는 텍스트 편집기입니다.","syntax":"vi [파일]","example":"vi script.sh","usage":"i·I·a·A·o·O 입력 시작, Esc 일반 모드, h/j/k/l 이동, x 삭제, :w 저장, :q 종료, :q! 강제 종료, :wq 저장 후 종료.","options":["i / I: 현재 위치 / 행 시작 삽입","a / A: 커서 뒤 / 행 끝 삽입","o / O: 아래 / 위에 새 행","h j k l: 왼쪽 아래 위 오른쪽","x: 한 글자 삭제",":w / :q / :q! / :wq: 저장 / 종료 / 강제 종료 / 저장 후 종료"]},{"id":"lecture-52","name":"vimtutor","cat":"text","keyword":"텍스트 편집기","desc":"Vim 사용법을 대화형으로 익히는 튜토리얼을 실행합니다.","syntax":"vimtutor [언어]","example":"vimtutor","usage":"설치된 Vim 패키지와 로캘에 따라 한국어 지원 여부가 달라집니다.","options":["-g ko: 일부 환경에서 한국어 GUI 튜토리얼 지정(지원 여부 확인)"]},{"id":"lecture-53","name":"pgrep","cat":"process","keyword":"프로세스·작업","desc":"프로세스 이름이나 패턴으로 PID를 검색합니다.","syntax":"pgrep [옵션] 패턴","example":"pgrep bash","usage":"프로세스 ID를 확인할 때 사용합니다.","options":["-l: PID와 이름 함께 표시","-f: 전체 명령줄에서 검색"]},{"id":"lecture-54","name":"sleep","cat":"process","keyword":"프로세스·작업","desc":"지정한 시간만큼 명령 실행을 지연합니다.","syntax":"sleep 시간","example":"sleep 10 &","usage":"백그라운드 작업과 jobs·fg 실습에 활용합니다.","options":["s / m / h: 초 / 분 / 시간 단위"]},{"id":"lecture-55","name":"set","cat":"env","keyword":"셸 변수·환경","desc":"현재 셸의 변수 및 함수 등을 출력하거나 셸 옵션을 설정합니다.","syntax":"set [옵션]","example":"set | grep USER","usage":"출력에는 환경 변수 외 셸 변수와 함수도 포함됩니다.","options":["-o: 셸 옵션 표시"]},{"id":"lecture-56","name":"unset","cat":"env","keyword":"셸 변수·환경","desc":"셸 변수 또는 함수를 제거합니다.","syntax":"unset 변수명","example":"unset SCORE","usage":"현재 셸에서 해당 변수의 정의를 해제합니다.","options":["-v: 변수 해제","-f: 함수 해제"]},{"id":"lecture-57","name":"env / printenv","cat":"env","keyword":"셸 변수·환경","desc":"현재 프로세스의 환경 변수를 확인합니다.","syntax":"printenv [변수명]","example":"printenv PATH","usage":"env는 수정된 환경으로 프로그램을 실행할 때도 사용할 수 있습니다.","options":["printenv 변수명: 지정 변수 값 확인","env NAME=value 명령: 임시 환경 변수로 실행"]},{"id":"lecture-58","name":"export","cat":"env","keyword":"셸 변수·환경","desc":"셸 변수를 자식 프로세스에 전달할 환경 변수로 지정합니다.","syntax":"export 변수명=값","example":"export PATH=\"$PATH:$HOME/bin\"","usage":"PATH 변경 시 기존 경로를 유지하는지 확인합니다.","options":["-p: 내보낸 변수 목록 표시"]},{"id":"lecture-59","name":"echo","cat":"env","keyword":"셸 변수·환경","desc":"문자열과 변수 값을 표준 출력에 표시합니다.","syntax":"echo [옵션] [문자열]","example":"echo \"$HOME\"","usage":"셸 스크립트에서 변수와 위치 매개변수 확인에 활용합니다.","options":["-n: 마지막 줄바꿈 생략","-e: 이스케이프 시퀀스 해석(셸에 따라 다름)"]},{"id":"lecture-60","name":"whereis","cat":"env","keyword":"명령어 탐색","desc":"명령어의 바이너리 및 매뉴얼 위치를 찾습니다.","syntax":"whereis 명령어","example":"whereis ls","usage":"실행 파일의 실제 검색 경로와는 차이가 있을 수 있습니다.","options":["-b: 바이너리만 검색","-m: 매뉴얼만 검색"]},{"id":"lecture-61","name":"source / .","cat":"env","keyword":"셸 스크립트","desc":"스크립트를 현재 셸에서 실행하여 변수와 설정을 반영합니다.","syntax":"source 파일 또는 . 파일","example":"source ~/.bashrc","usage":"새 셸을 만들지 않으므로 환경 설정 적용에 사용합니다.","options":[]},{"id":"lecture-62","name":"위치 매개변수","cat":"env","keyword":"셸 스크립트","desc":"스크립트에 전달한 인자를 위치에 따라 참조하는 특수 변수입니다.","syntax":"./script.sh 인자1 인자2","example":"echo \"$1\" \"$#\" \"$@\"","usage":"명령어가 아닌 셸 스크립트 문법 항목입니다.","options":["$0: 실행 파일 이름","$1 ~ $9: 전달 인자","$#: 인자 개수","$@: 각 인자 전체","$*: 모든 인자를 하나로 확장(따옴표 사용 시 차이)"]},{"id":63,"name":"2>>","cat":"flow","keyword":"표준 에러, 리다이렉션, 추가","desc":"표준 에러(stderr)를 파일 끝에 덧붙입니다.","syntax":"명령어 2>> 오류파일","example":"ls /없는경로 2>> error.log","usage":"기존 오류 기록을 지우지 않고 누적할 때 사용합니다. 2>는 덮어쓰기입니다.","options":["2: 표준 에러 파일 디스크립터",">>: 파일 끝에 추가"]},{"id":64,"name":"&>","cat":"flow","keyword":"표준 출력, 표준 에러, 덮어쓰기","desc":"표준 출력(stdout)과 표준 에러(stderr)를 하나의 파일에 덮어씁니다.","syntax":"명령어 &> 출력파일","example":"ls /tmp /없는경로 &> result.log","usage":"정상 결과와 오류를 한 파일로 모읍니다. Bash 셸 기준 문법입니다.","options":["&>: 표준 출력과 표준 에러 함께 덮어쓰기"]},{"id":65,"name":"&>>","cat":"flow","keyword":"표준 출력, 표준 에러, 추가","desc":"표준 출력과 표준 에러를 모두 파일 끝에 덧붙입니다.","syntax":"명령어 &>> 출력파일","example":"ls /tmp /없는경로 &>> result.log","usage":"정상·오류 로그를 기존 기록 뒤에 누적할 때 사용합니다. Bash 셸 기준 문법입니다.","options":["&>>: 표준 출력과 표준 에러 함께 추가"]},{"id":66,"name":"$(명령어)","cat":"flow","keyword":"셸 문법, 명령어 치환, 변수, 실행 결과","desc":"명령어 실행 결과를 문자열로 치환하여 변수나 다른 명령어에 사용합니다.","syntax":"변수=$(명령어)","example":"TODAY=$(date +%F); echo \"$TODAY\"","usage":"06_리눅스 셸 명령어 PPT 16쪽의 명령어 결과를 변수에 저장하는 문법입니다. 독립 실행 명령어가 아닌 셸 구문입니다.","options":["$(...): 괄호 안 명령어를 실행하고 표준 출력을 치환"]}];
+
+const catMap={file:'📁 파일 & 디렉터리',text:'📝 문자 처리 & 편집기',process:'⚡ 프로세스 관리',env:'⚙️ 환경 & 권한',network:'🌐 네트워크',archive:'📦 압축 & 아카이브',system:'💻 시스템 정보',flow:'🔀 파이프라인 & 리다이렉션'};
+const storageKey='sys_linux_cards_v4',studentKey='sys_linux_students_v1';
+const copy=d=>({...d,options:Array.isArray(d.options)?[...d.options]:typeof d.options==='string'?[d.options]:[]});
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function load(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback}catch(e){return fallback}}
+function store(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){alert('브라우저 저장에 실패했습니다. 저장 공간을 확인하세요.')}}
+// 기존 데이터는 유지하고 신규 강의 항목은 자동 병합한다.
+let commands=initialCommands.map(copy);
+const saved=load(storageKey,null),legacy=load('sys_linux_cards_v3',null);
+const previous=Array.isArray(saved)?saved:Array.isArray(legacy)?legacy:null;
+if(previous){const map=new Map(previous.filter(d=>d&&d.id!=null).map(d=>[String(d.id),d]));commands=initialCommands.filter(d=>!map.get(String(d.id))?.deleted).map(d=>{const old=map.get(String(d.id));return old?copy({...d,...old}):copy(d)});commands.push(...previous.filter(d=>d&&!initialCommands.some(x=>String(x.id)===String(d.id))&&!d.deleted).map(copy));}
+let deletedIds=new Set(load('sys_linux_deleted_v1',[]));commands=commands.filter(d=>!deletedIds.has(String(d.id)));
+// 기존 선택 학습자의 기록을 단일 로컬 프로필로 한 번만 이전합니다.
+const legacyStudents=load(studentKey,null);
+let singleProfile=load('sys_linux_single_profile_v1',null);
+if(!singleProfile || !Array.isArray(singleProfile.favorites) || !singleProfile.status || typeof singleProfile.status!=='object'){
+  const previousProfile=legacyStudents?.profiles?.[legacyStudents.current] || {favorites:[],status:{}};
+  singleProfile={favorites:Array.isArray(previousProfile.favorites)?previousProfile.favorites:[],status:previousProfile.status||{}};
+  store('sys_linux_single_profile_v1',singleProfile);
+}
+let currentCategory='all',currentView='all',editingId=null,quizList=[],quizIndex=0,quizRevealed=false;
+const profile=()=>singleProfile;
+function saveProfiles(){store('sys_linux_single_profile_v1',singleProfile)}
+function saveCommands(){store(storageKey,commands)}
+function allCategories(){return Object.keys(catMap).filter(cat=>commands.some(d=>d.cat===cat))}
+function renderFilters(){const root=document.getElementById('categoryFilters');root.innerHTML=[['all','전체'],...allCategories().map(c=>[c,catMap[c]])].map(([id,label])=>`<button type="button" class="filter-chip ${currentCategory===id?'active':''}" data-cat="${esc(id)}" onclick="setCategory('${id}')">${esc(label)} <span class="count">${id==='all'?commands.length:commands.filter(d=>d.cat===id).length}</span></button>`).join('')}
+function setCategory(cat){currentCategory=cat;currentView='all';renderCards()}
+function setView(view){currentView=view;currentCategory='all';renderCards()}
+function searchable(d){return [d.name,d.keyword,d.desc,d.syntax,d.example,d.usage,catMap[d.cat]||d.cat,...(d.options||[])].join(' ').toLocaleLowerCase()}
+function setSearchAndRender(){currentCategory='all';currentView='all';renderCards();renderSuggestions()}
+function handleSearchKey(e){if(e.key==='Escape'){document.getElementById('suggestions').classList.remove('show')}if(e.key==='Enter'){document.getElementById('suggestions').classList.remove('show')}}
+function renderSuggestions(){const box=document.getElementById('suggestions'),q=document.getElementById('searchInput').value.trim().toLocaleLowerCase();if(!q){box.classList.remove('show');return}const list=commands.filter(d=>searchable(d).includes(q)).sort((a,b)=>(b.name.toLowerCase().startsWith(q)?1:0)-(a.name.toLowerCase().startsWith(q)?1:0)).slice(0,7);box.innerHTML=list.map(d=>`<button class="suggestion" data-id="${esc(d.id)}"><strong>${esc(d.name)}</strong><small>${esc(d.desc)}</small></button>`).join('')||'<div style="padding:13px 18px;color:#777">관련 명령어가 없습니다.</div>';box.classList.add('show');box.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const d=commands.find(x=>String(x.id)===b.dataset.id);if(d){document.getElementById('searchInput').value=d.name;currentCategory='all';currentView='all';renderCards();box.classList.remove('show')}}))}
+function toggleFavorite(id){const p=profile(),key=String(id),set=new Set((p.favorites||[]).map(String));set.has(key)?set.delete(key):set.add(key);p.favorites=[...set];saveProfiles();renderCards()}
+function setStatus(id,value){profile().status[String(id)]=value;saveProfiles();renderCards()}
+function renderCards(){renderFilters();document.getElementById('heroSubtitle').textContent=`${commands.length}개 항목 · 명령어 검색 · 학습 상태 관리 · 암기 카드`;document.getElementById('allView').style.fontWeight=currentView==='all'?'700':'400';document.getElementById('favView').style.fontWeight=currentView==='favorites'?'700':'400';const p=profile(),q=document.getElementById('searchInput').value.trim().toLocaleLowerCase(),status=document.getElementById('statusFilter').value;const fav=new Set((p.favorites||[]).map(String));const filtered=commands.filter(d=>(currentCategory==='all'||d.cat===currentCategory)&&(currentView!=='favorites'||fav.has(String(d.id)))&&(status==='all'||(p.status[String(d.id)]||'unlearned')===status)&&(!q||searchable(d).includes(q)));const grid=document.getElementById('cardsGrid');grid.innerHTML='';if(!filtered.length){grid.innerHTML='<p class="empty-state">조건에 맞는 명령어가 없습니다. 검색어나 필터를 변경해 보세요.</p>';return}
+filtered.forEach(d=>{const el=document.createElement('article');el.className='card';const opts=(d.options||[]).map(o=>{const i=o.indexOf(':');return `<tr><td>${esc(i<0?o:o.slice(0,i))}</td><td>${esc(i<0?'':o.slice(i+1))}</td></tr>`}).join('');const key=String(d.id),state=p.status[key]||'unlearned';el.innerHTML=`<div class="card-header"><span class="cmd-name">${esc(d.name)}</span><div style="display:flex;gap:6px;align-items:center"><button class="star-btn ${fav.has(key)?'on':''}" title="책갈피" aria-label="책갈피">${fav.has(key)?'★':'☆'}</button><span class="cat-tag">${esc(catMap[d.cat]||d.cat)}</span></div></div><div class="card-meta"><span class="meta-pill">키워드 · ${esc(d.keyword||'미입력')}</span></div><p class="cmd-desc">${esc(d.desc)}</p><div class="card-section-label">기본 문법</div><div class="syntax-box">${esc(d.syntax||d.name)}</div><div class="card-section-label">핵심 옵션</div><table class="options-list"><tbody>${opts||'<tr><td colspan="2">추가된 옵션이 없습니다.</td></tr>'}</tbody></table><div class="card-section-label">실행 예시</div><div class="example-box">$ ${esc(d.example||d.name)}</div><div class="card-section-label">활용 · 주의사항</div><div class="usage-note">${esc(d.usage||'활용 사례를 추가해 주세요.')}</div><div class="card-footer-meta"><span>수정: ${esc(d.updated||'초기 등록')} · 옵션 ${(d.options||[]).length}개</span><select class="status-select" aria-label="${esc(d.name)} 학습 상태"><option value="unlearned" ${state==='unlearned'?'selected':''}>미학습</option><option value="learning" ${state==='learning'?'selected':''}>학습 중</option><option value="done" ${state==='done'?'selected':''}>완료</option></select></div><div class="card-tools"><button class="mini-btn add-option">+ 옵션 추가</button><button class="mini-btn edit-command">수정</button><button class="mini-btn danger-btn delete-command">삭제</button></div>`;el.querySelector('.star-btn').onclick=()=>toggleFavorite(d.id);el.querySelector('.status-select').onchange=e=>setStatus(d.id,e.target.value);el.querySelector('.add-option').onclick=()=>addOption(d.id);el.querySelector('.edit-command').onclick=()=>editCommand(d.id);el.querySelector('.delete-command').onclick=()=>deleteCommand(d.id);grid.appendChild(el)})}
+function addOption(id){const d=commands.find(x=>String(x.id)===String(id));if(!d)return;const v=prompt(`${d.name}에 추가할 옵션을 입력하세요.\n예: -x: 설명`);if(v===null)return;if(!v.trim()){alert('옵션 내용을 입력하세요.');return}d.options??=[];d.options.push(v.trim());d.updated=new Date().toLocaleDateString('ko-KR');saveCommands();renderCards()}
+function deleteCommand(id){const d=commands.find(x=>String(x.id)===String(id));if(!d||!confirm(`'${d.name}' 항목을 삭제할까요?\n삭제하면 현재 브라우저의 사전에서 제외됩니다.`))return;commands=commands.filter(x=>String(x.id)!==String(id));deletedIds.add(String(id));store('sys_linux_deleted_v1',[...deletedIds]);saveCommands();renderCards()}
+const editorFields={name:'addCmd',cat:'addCat',desc:'addDesc',keyword:'addKeyword',syntax:'addSyntax',usage:'addUsage',example:'addExample',options:'addOptions'};
+function openAddModal(){editingId=null;document.getElementById('editorTitle').textContent='새 명령어 추가';for(const field of Object.values(editorFields))document.getElementById(field).value='';openModal('addModal')}
+function editCommand(id){const d=commands.find(x=>String(x.id)===String(id));if(!d)return;editingId=id;document.getElementById('editorTitle').textContent=`${d.name} 명령어 수정`;for(const [key,field] of Object.entries(editorFields))document.getElementById(field).value=key==='options'?(d.options||[]).join('\n'):d[key]||'';openModal('addModal')}
+function saveNewCommand(){const read=k=>document.getElementById(editorFields[k]).value.trim();if(!read('name')||!read('desc')){alert('명령어 이름과 설명은 필수입니다.');return}const data={name:read('name'),cat:read('cat'),desc:read('desc'),keyword:read('keyword'),syntax:read('syntax'),usage:read('usage'),example:read('example'),options:read('options').split('\n').map(x=>x.trim()).filter(Boolean),updated:new Date().toLocaleDateString('ko-KR')};if(editingId!==null){const i=commands.findIndex(d=>String(d.id)===String(editingId));if(i>=0)commands[i]={...commands[i],...data}}else{commands.unshift({id:'custom-'+Date.now(),...data})}saveCommands();closeModal('addModal');renderCards()}
+function openModal(id){document.getElementById(id).style.display='flex'}function closeModal(id){document.getElementById(id).style.display='none'}function openRoleModal(){openModal('roleModal')}
+function openQuiz(){const cats=document.getElementById('quizCategory');cats.innerHTML=[['all','전체 카테고리'],...allCategories().map(c=>[c,catMap[c]])].map(([id,label])=>`<option value="${esc(id)}">${esc(label)}</option>`).join('');document.getElementById('quizScope').value='all';resetQuiz();openModal('quizModal')}
+function resetQuiz(){const cat=document.getElementById('quizCategory').value,scope=document.getElementById('quizScope').value,p=profile(),fav=new Set((p.favorites||[]).map(String));quizList=commands.filter(d=>(cat==='all'||d.cat===cat)&&(scope==='all'||(scope==='favorites'?fav.has(String(d.id)):(p.status[String(d.id)]||'unlearned')===scope))).map(d=>d.id);quizIndex=0;quizRevealed=false;renderQuiz()}
+function renderQuiz(){const root=document.getElementById('flashcard'),stats=document.getElementById('quizStats');if(!quizList.length){stats.textContent='0개';root.innerHTML='<div>학습할 카드가 없습니다. 필터를 변경해 주세요.</div>';return}quizIndex=(quizIndex+quizList.length)%quizList.length;const d=commands.find(x=>String(x.id)===String(quizList[quizIndex]));stats.textContent=`${quizIndex+1} / ${quizList.length} · ${catMap[d.cat]||d.cat}`;root.innerHTML=quizRevealed?`<div class="flash-hint">정답 · 카드 클릭 시 문제로 돌아갑니다</div><div class="flash-title">${esc(d.name)}</div><div class="flash-answer">${esc(d.desc)}\n\n문법: ${esc(d.syntax||d.name)}\n예시: ${esc(d.example||d.name)}\n활용: ${esc(d.usage||'')}</div>`:`<div class="flash-hint">이 설명에 해당하는 명령어는?</div><div class="flash-answer" style="font-size:19px;font-weight:600">${esc(d.desc)}</div><div class="flash-hint">키워드: ${esc(d.keyword||'없음')} · 클릭해서 정답 확인</div>`}
+function flipCard(){if(!quizList.length)return;quizRevealed=!quizRevealed;renderQuiz()}function nextCard(){if(!quizList.length)return;quizIndex=(quizIndex+1)%quizList.length;quizRevealed=false;renderQuiz()}function previousCard(){if(!quizList.length)return;quizIndex=(quizIndex-1+quizList.length)%quizList.length;quizRevealed=false;renderQuiz()}function markQuiz(status){if(!quizList.length)return;profile().status[String(quizList[quizIndex])]=status;saveProfiles();renderCards();nextCard()}function shuffleQuiz(){for(let i=quizList.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[quizList[i],quizList[j]]=[quizList[j],quizList[i]]}quizIndex=0;quizRevealed=false;renderQuiz()}
+document.addEventListener('click',e=>{if(!e.target.closest('.search-bar-wrapper'))document.getElementById('suggestions').classList.remove('show')});
+renderCards();
+
+    </script>
+    <script src="/js/dictionary-enhancements.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title>Linux Command Lexicon book mark</title>
+  <rect width="512" height="512" rx="112" fill="#102033"/>
+  <path d="M106 132c74-2 120 11 150 47v205c-31-35-78-48-150-46V132Z" fill="#F8F0DF"/>
+  <path d="M406 132c-74-2-120 11-150 47v205c31-35 78-48 150-46V132Z" fill="#E9D8B8"/>
+  <path d="M256 178v206" stroke="#B84A3D" stroke-width="10"/>
+  <path d="M142 192h68M142 226h68M142 260h54M302 192h68M302 226h68M302 260h54" stroke="#2D5C98" stroke-width="11" stroke-linecap="round" opacity=".85"/>
+  <path d="M315 338v63l24-19 24 19v-66" fill="#B84A3D"/>
+  <path d="M315 338v63l24-19 24 19v-66" stroke="#F8F0DF" stroke-width="4" stroke-linejoin="round"/>
+</svg>
